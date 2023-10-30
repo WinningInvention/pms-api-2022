@@ -9,6 +9,7 @@ using Serviceslayer.Logics;
 using System.Text;
 using AutoMapper;
 using Serviceslayer;
+using pms_core_api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //    option.AddPolicy("PMSPolicy", a => a.WithOrigins(origins: "http://localhost:3000/").AllowAnyMethod().AllowAnyHeader());
 //});
 var ConnectionString = builder.Configuration.GetConnectionString("myconn");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString, opt => opt.MigrationsAssembly("RepositoryLayer")));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -85,6 +86,7 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MigrateDatabase();
 
 app.MapControllers();
 

@@ -105,6 +105,24 @@ namespace pms_core_api.Controllers
             return responseFormatDto;
         }
 
+        [HttpPost(nameof(InsertOrUpdatePatientBedComment))]
+        public IActionResult InsertOrUpdatePatientBedComment([FromBody] AddCommentPatientBedDto addCommentPatientBedDto)
+        {
+            _zoneBedService.InsertOrUpdatePatientBedComment(addCommentPatientBedDto);
+            return Ok("Comment inserted or updated");
+        }
+
+        [HttpGet(nameof(GetCommentByPatientBedId))]
+        public IActionResult GetCommentByPatientBedId(int PatientBedId)
+        {
+            var result = _zoneBedService.GetCommentByPatientBedId(PatientBedId);
+            if (result is not null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("No records found");
+        }
+
         //Added comment to test commit and push after deleting debug, bin and object folders.
 
     }

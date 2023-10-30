@@ -64,6 +64,10 @@ namespace DomainLayer.Models
             .HasColumnName("ConsultantName")
             .HasColumnType("NVARCHAR(500)")
             .IsRequired(false);
+            builder.Property(x => x.Comment)
+           .HasColumnName("Comment")
+           .HasColumnType("NVARCHAR(500)")
+           .IsRequired(false);
 
         }
     }

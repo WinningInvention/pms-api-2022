@@ -277,5 +277,34 @@ namespace Serviceslayer.Logics
             return Allzonedto;
         }
 
+        public void InsertOrUpdatePatientBedComment(AddCommentPatientBedDto addCommentPatientBedDto)
+        {
+            var getpatientBed = _PatientBedrepository.Get(x => x.PatientBedId == addCommentPatientBedDto.PatientBedId);
+            if (getpatientBed == null)
+            {
+                PatientBed patientBed = new PatientBed();
+                patientBed.Comment = addCommentPatientBedDto.Comment;
+                _PatientBedrepository.Insert(patientBed);
+            }
+            else
+            {
+                getpatientBed.Comment = addCommentPatientBedDto.Comment;
+                _PatientBedrepository.Update(getpatientBed);
+            }   
+        }
+
+        public AddCommentPatientBedDto GetCommentByPatientBedId(int PatientBedId)
+        {
+            var getpatientBed = _PatientBedrepository.Get(x => x.PatientBedId == PatientBedId);
+            AddCommentPatientBedDto addCommentPatientBedDto = new AddCommentPatientBedDto();
+            if (getpatientBed != null)
+            {
+                addCommentPatientBedDto.PatientBedId = getpatientBed.PatientBedId;
+                addCommentPatientBedDto.Comment = getpatientBed.Comment;
+                return addCommentPatientBedDto;
+            }
+            return addCommentPatientBedDto ;
+        }
+
     }
 }

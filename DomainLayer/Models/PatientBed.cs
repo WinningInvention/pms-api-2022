@@ -23,5 +23,6 @@ namespace DomainLayer.Models
         public string CurrentLocation { get; set; }
         public string Destination { get; set; }
         public string ConsultantName { get; set; }
+        public string Comment { get; set; }
     }
 }

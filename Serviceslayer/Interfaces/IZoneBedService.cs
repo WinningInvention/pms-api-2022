@@ -14,5 +14,7 @@ namespace Serviceslayer.Interfaces
         public bool DeleteZoneBed(int zoneid);
         public bool MovePatient(MovePatientDto movePatient);
         public IEnumerable<ZoneBedBirdViewDto> GetZoneBedBirdView();
+        void InsertOrUpdatePatientBedComment(AddCommentPatientBedDto addCommentPatientBedDto);
+        AddCommentPatientBedDto GetCommentByPatientBedId(int PatientBedId);
     }
 }
