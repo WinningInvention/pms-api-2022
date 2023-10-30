@@ -1,0 +1,12 @@
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\bin\Debug\net6.0\DomainLayer.deps.json
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\bin\Debug\net6.0\DomainLayer.dll
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\bin\Debug\net6.0\DomainLayer.pdb
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.csproj.AssemblyReference.cache
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.AssemblyInfoInputs.cache
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.AssemblyInfo.cs
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.csproj.CoreCompileInputs.cache
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.dll
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\refint\DomainLayer.dll
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\DomainLayer.pdb
+D:\Upwork\2022\AICU\repos\backend\DomainLayer\obj\Debug\net6.0\ref\DomainLayer.dll

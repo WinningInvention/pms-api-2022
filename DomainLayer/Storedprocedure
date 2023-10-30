@@ -1,0 +1,113 @@
+USE [pms_2022]
+GO
+/****** Object:  StoredProcedure [dbo].[InsertFromData]    Script Date: 08-11-2022 12:38:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE proc [dbo].[InsertFromData]
+@fromModuelData Nvarchar(max)
+--@insertFlag bit OUTPUT
+as
+begin transaction 
+begin try
+-- Insert all data
+
+--Insert into Patient table
+Insert into dbo.Patient([Hospital_Number],[NHS_Number],[Name],[Post_Code],[Age],[DOB],[Gender],[Hospital_Location_Id],[IsCardiff],
+[IsSpecialist],[Speciality_Id],[Hospital_id],[Provisional_diagnosis],[Priority_Level_Id]
+      ,[CreatedDate],[ModifiedDate],[IsActive],[Admitting_consultant_name_Id]
+      ,[Another_Hospital],[Organ_Support_requirements],[Repatriation],[health_board],[Hospital_Ward_Location]
+      ,[Ward_Location_ID]) 
+
+SELECT [Hospital_Number],[NHS_Number],[Name],[Post_Code],[Age],[DOB],[Gender],[Hospital_Location_Id],[IsCardiff],
+[IsSpecialist],[Speciality_Id],[Hospital_id],[Provisional_diagnosis],[Priority_Level_Id]
+      ,[CreatedDate],[ModifiedDate],[IsActive],[Admitting_consultant_name_Id]
+      ,[Another_Hospital],[Organ_Support_requirements],[Repatriation],[health_board],[Hospital_Ward_Location]
+      ,[Ward_Location_ID]
+
+FROM OPENJSON(@fromModuelData)
+WITH (Hospital_Number nvarchar(100) '$.Hospital_Number',
+       NHS_Number nvarchar(100) '$.NHS_Number',
+	[Name] nvarchar(100) '$.Name',
+	Post_Code nvarchar(100) '$.Post_Code',
+	Age int '$.Age',
+	DOB datetime '$.DOB',
+	Gender nvarchar(100) '$.Gender',
+	[Hospital_Location_Id] int '$.locationMaster_id',
+	[IsCardiff] bit '$.Hospital_area',
+	[IsSpecialist] bit '$.ICU_Care',
+	[Speciality_Id] int '$.specialityMaster_id',
+	[Hospital_id] int '$.Hospital_id',
+	[Provisional_diagnosis] nvarchar(100) '$.Previous_Medical',
+	[Priority_Level_Id] int '$.priorityLevelMaster_id',
+	[CreatedDate] datetime '$.created_date',
+	[ModifiedDate] datetime '$.modified_date',
+	[IsActive] bit '$.is_active',
+	[Admitting_consultant_name_Id] int '$.Admitting_consultant_name_Id',
+	[Another_Hospital] nvarchar(100) '$.Another_Hospital',
+	[Organ_Support_requirements] nvarchar(100) '$.Organ_Support_requirements',
+	[Repatriation] bit '$.Repatriation',
+	[health_board] nvarchar(100) '$.health_board',
+	[Hospital_Ward_Location] nvarchar(100) '$.Hospital_Ward_Location',
+    [Ward_Location_ID] int '$.Ward_Location_ID')
+
+	DECLARE @PatientId INT;
+	 set @PatientId = SCOPE_IDENTITY();
+
+	Insert into dbo.Referal([Patient_Id],[referal_status_id],[Comment],[Start_Datetime],[CreatedDate],[ModifiedDate],[IsActive])
+	--values(@UserId, '$.ICU_care_Status_id',null,'$.created_date','$.created_date','$.modified_date','$.is_active')
+	SELECT @PatientId,[referal_status_id],null,[Start_Datetime],[CreatedDate],[ModifiedDate],[IsActive]
+	FROM OPENJSON(@fromModuelData)
+	WITH (
+	[referal_status_id] int '$.ICU_care_Status_id',
+	[Start_Datetime] [datetime] '$.created_date',
+	[CreatedDate] datetime '$.created_date',
+	[ModifiedDate] datetime '$.modified_date',
+	[IsActive] bit '$.is_active')
+
+	Insert into dbo.Aicu_Patient_Form_Details([Patient_Id],[Consultant_Id],[Referring_staff_name],[clinical_requirement_Id],[Previous_medical_surgical_History]
+							,[Infection_Control_Information],[Referal_Date_time],[CreatedDate],[ModifiedDate],[IsActive])
+	SELECT @PatientId,[Consultant_Id],[Referring_staff_name],0,[Previous_medical_surgical_History]
+							,[Infection_Control_Information],[Referal_Date_time],[CreatedDate],[ModifiedDate],[IsActive]
+	FROM OPENJSON(@fromModuelData)
+	WITH (
+	[Consultant_Id] int '$.Admitting_consultant_name_Id',
+	[Referring_staff_name] nvarchar(100) '$.Referring_Staff_name',
+	[Previous_medical_surgical_History] nvarchar(100) '$.Previous_Medical',
+	[Infection_Control_Information] nvarchar(100) '$.Infection_Control_Information',
+	[Referal_Date_time] datetime '$.created_date',
+	[CreatedDate] datetime '$.created_date',
+	[ModifiedDate] datetime '$.modified_date',
+	[IsActive] bit '$.is_active')
+
+	DECLARE @ICUCareStatus INT;
+	set @ICUCareStatus = JSON_VALUE(@fromModuelData, '$.ICU_care_Status_id');
+
+
+	if(@ICUCareStatus = 1)
+	 begin
+            insert into dbo.OutlierQueue_In([Patient_id],[Priority_Level_id],[Start_Datetime],[CreatedDate],[ModifiedDate],[IsActive])
+			SELECT @PatientId,[Priority_Level_id],[Start_Datetime],[CreatedDate],[ModifiedDate],[IsActive]
+	FROM OPENJSON(@fromModuelData)
+	WITH (
+
+	[Priority_Level_id] int '$.priorityLevelMaster_id',
+	[Start_Datetime] datetime '$.created_date',
+	[Referal_Date_time] datetime '$.created_date',
+	[CreatedDate] datetime '$.created_date',
+	[ModifiedDate] datetime '$.modified_date',
+	[IsActive] bit '$.is_active')
+
+     End
+
+commit transaction 
+return 0;
+end try
+
+begin catch
+
+rollback transaction 
+return 1;
+end catch
