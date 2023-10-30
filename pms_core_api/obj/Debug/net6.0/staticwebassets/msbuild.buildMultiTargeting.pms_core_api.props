@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\pms_core_api.props" />
+</Project>
