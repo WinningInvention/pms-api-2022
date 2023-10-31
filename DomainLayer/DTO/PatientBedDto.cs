@@ -39,6 +39,7 @@ namespace DomainLayer.DTO
         public string PatientHospitalNumber { get; set; }
         public string? DischargeOutcome { get; set; }
         public string? CurrentLocation { get; set; }
-        
+        public string Comment { get; set; }
+
     }
 }

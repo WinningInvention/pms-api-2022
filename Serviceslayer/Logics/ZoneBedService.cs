@@ -68,7 +68,8 @@ namespace Serviceslayer.Logics
                                       ClinicalRequirements = bp == null ? "" : bp.ClinicalRequirements ==null?"":bp.ClinicalRequirements,
                                       IsReadytoDischarge = bp == null ? false : bp.IsReadyDischarge,
                                       DischargeOutcome = bp==null? "": bp.DischargeOutcome,
-                                      CurrentLocation = bp == null ? "" : bp.CurrentLocation
+                                      CurrentLocation = bp == null ? "" : bp.CurrentLocation,
+                                      Comment= bp == null ? "" : bp.Comment
                                   }).ToList();
 
             var priorityLevelAll = _PriorityLevelMasterrepository.GetAll();
@@ -109,8 +110,8 @@ namespace Serviceslayer.Logics
                                              , Age = bp ==null ?0:bp.Age,
                                              PatientHospitalNumber = bp == null?"":bp.Hospital_Number,
                                              DischargeOutcome = x.DischargeOutcome,
-                                             CurrentLocation = x.CurrentLocation
-
+                                             CurrentLocation = x.CurrentLocation,
+                                             Comment = x.Comment == null ? "" : x.Comment
 
                                          };
 
