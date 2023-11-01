@@ -86,7 +86,7 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MigrateDatabase();
+//app.MigrateDatabase();
 
 app.MapControllers();
 

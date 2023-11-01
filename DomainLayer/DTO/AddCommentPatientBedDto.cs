@@ -9,6 +9,6 @@ namespace DomainLayer.DTO
     public class AddCommentPatientBedDto
     {
         public int PatientBedId { get; set; }
-        public string Comment { get; set; }
+        public string HandOverComment { get; set; }
     }
 }

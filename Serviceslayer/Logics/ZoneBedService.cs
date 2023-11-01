@@ -69,7 +69,7 @@ namespace Serviceslayer.Logics
                                       IsReadytoDischarge = bp == null ? false : bp.IsReadyDischarge,
                                       DischargeOutcome = bp==null? "": bp.DischargeOutcome,
                                       CurrentLocation = bp == null ? "" : bp.CurrentLocation,
-                                      Comment= bp == null ? "" : bp.Comment
+                                      HandOverComment = bp == null ? "" : bp.Comment
                                   }).ToList();
 
             var priorityLevelAll = _PriorityLevelMasterrepository.GetAll();
@@ -111,7 +111,7 @@ namespace Serviceslayer.Logics
                                              PatientHospitalNumber = bp == null?"":bp.Hospital_Number,
                                              DischargeOutcome = x.DischargeOutcome,
                                              CurrentLocation = x.CurrentLocation,
-                                             Comment = x.Comment == null ? "" : x.Comment
+                                             HandOverComment = x.HandOverComment == null ? "" : x.HandOverComment
 
                                          };
 
@@ -284,12 +284,12 @@ namespace Serviceslayer.Logics
             if (getpatientBed == null)
             {
                 PatientBed patientBed = new PatientBed();
-                patientBed.Comment = addCommentPatientBedDto.Comment;
+                patientBed.Comment = addCommentPatientBedDto.HandOverComment;
                 _PatientBedrepository.Insert(patientBed);
             }
             else
             {
-                getpatientBed.Comment = addCommentPatientBedDto.Comment;
+                getpatientBed.Comment = addCommentPatientBedDto.HandOverComment;
                 _PatientBedrepository.Update(getpatientBed);
             }   
         }
@@ -301,7 +301,7 @@ namespace Serviceslayer.Logics
             if (getpatientBed != null)
             {
                 addCommentPatientBedDto.PatientBedId = getpatientBed.PatientBedId;
-                addCommentPatientBedDto.Comment = getpatientBed.Comment;
+                addCommentPatientBedDto.HandOverComment = getpatientBed.Comment;
                 return addCommentPatientBedDto;
             }
             return addCommentPatientBedDto ;

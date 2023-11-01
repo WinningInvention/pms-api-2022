@@ -29,14 +29,17 @@ namespace pms_core_api.Controllers
         }
 
         [HttpGet(nameof(GetPatientBed))]
-        public IActionResult GetPatientBed(int ZoneId)
+        public ResponseFormatDto GetPatientBed(int ZoneId)
         {
             var result = _zoneBedService.GetAllPatientBed(ZoneId);
+            ResponseFormatDto responseFormatDto = new ResponseFormatDto();
             if (result is not null)
             {
-                return Ok(result);
+                responseFormatDto.statusCode = (int)HttpStatusCode.Accepted;
+                responseFormatDto.data = result;
+                return responseFormatDto;
             }
-            return BadRequest("No records found");
+            return responseFormatDto;
         }
         [HttpPost(nameof(InsertPatientBed))]
         public IActionResult InsertPatientBed([FromBody] List<AllocatePatientBedDto> patientBedDtos)
@@ -106,21 +109,27 @@ namespace pms_core_api.Controllers
         }
 
         [HttpPost(nameof(InsertOrUpdatePatientBedComment))]
-        public IActionResult InsertOrUpdatePatientBedComment([FromBody] AddCommentPatientBedDto addCommentPatientBedDto)
+        public ResponseFormatDto InsertOrUpdatePatientBedComment([FromBody] AddCommentPatientBedDto addCommentPatientBedDto)
         {
             _zoneBedService.InsertOrUpdatePatientBedComment(addCommentPatientBedDto);
-            return Ok("Comment inserted or updated");
+            ResponseFormatDto responseFormatDto = new ResponseFormatDto();
+            responseFormatDto.statusCode = (int)HttpStatusCode.Created;
+            responseFormatDto.message = "Comment saved successfully.";
+            return responseFormatDto;
         }
 
         [HttpGet(nameof(GetCommentByPatientBedId))]
-        public IActionResult GetCommentByPatientBedId(int PatientBedId)
+        public ResponseFormatDto GetCommentByPatientBedId(int PatientBedId)
         {
             var result = _zoneBedService.GetCommentByPatientBedId(PatientBedId);
+            ResponseFormatDto responseFormatDto = new ResponseFormatDto();
             if (result is not null)
             {
-                return Ok(result);
+                responseFormatDto.statusCode = (int)HttpStatusCode.Accepted;
+                responseFormatDto.data=result;
+                return responseFormatDto;
             }
-            return BadRequest("No records found");
+            return responseFormatDto;
         }
 
         //Added comment to test commit and push after deleting debug, bin and object folders.
