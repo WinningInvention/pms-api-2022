@@ -9,6 +9,9 @@ using Serviceslayer.Logics;
 using System.Text;
 using AutoMapper;
 using Serviceslayer;
+using Microsoft.AspNetCore.Identity;
+using pms_core_api;
+using DomainLayer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +28,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //    option.AddPolicy("PMSPolicy", a => a.WithOrigins(origins: "http://localhost:3000/").AllowAnyMethod().AllowAnyHeader());
 //});
 var ConnectionString = builder.Configuration.GetConnectionString("myconn");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString, opt => opt.MigrationsAssembly("RepositoryLayer")));
+builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
+builder.Services.AddScoped<SeedDataDB>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -63,7 +68,11 @@ builder.Services.AddTransient<IDashboardService, DashboardService>();
 builder.Services.AddTransient<IOutlierOutService, OutlierOutService>();
 builder.Services.AddTransient<IClinicalRequirementMasterService, ClinicalRequirementMasterService>();
 builder.Services.AddTransient<IInfectionControlMasterService, InfectionControlMasterService>();
-
+builder.Services.AddTransient<IUserRolesService, UserRolesService>();
+// For Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -85,6 +94,15 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MigrateDatabase();
+
+// Data seeding
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dataSeeder = services.GetRequiredService<SeedDataDB>();
+    dataSeeder.AddRoles();
+}
 
 app.MapControllers();
 
